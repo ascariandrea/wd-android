@@ -1,9 +1,10 @@
 (function() {
     "use strict";
 
-    var _ = require('underscore');
+    var _ = require('underscore'),
+        __slice = Array.prototype.slice;
 
-    var wd = null,
+    var originalWd = null,
         allElements = {};
 
     var buttonsElements = {
@@ -25,32 +26,23 @@
         'ViewPager': 'android.support.v4.view.ViewPager'
     };
 
-    var swipe = function(opts) {
-        var action = new wd.TouchAction(this);
-        action
-            .press({
-                x: opts.startX,
-                y: opts.startY
-            })
-            .wait(opts.duration)
-            .moveTo({
-                x: opts.endX,
-                y: opts.endY
-            })
-            .release();
-
-        return action.perform();
+    var buildArgs = function(path, args) {
+        var args = __slice.call(arguments);
+        args[0] = '//'.concat(path);
+        return args;
     }
 
     WdAndroid.prototype.buildMethod = function(path) {
         return (function() {
-            return this.elementByXPath('//'.concat(path));
+            console.log(buildArgs(path, arguments));
+
+            return this.elementByXPath.apply(this, buildArgs(path, arguments));
         });
     };
 
     WdAndroid.prototype.buildWaitForElementMethodName = function(path) {
         return (function() {
-            return this.waitForElementByXPath('//'.concat(path));
+            return this.waitForElementByXPath.apply(this, buildArgs(path, arguments));
         });
     };
 
@@ -62,6 +54,25 @@
         return "waitFor".concat(buildElementMethodName(m));
     }
 
+    var swipe = (function() {
+        return function(opts) {
+            var action = new originalWd.TouchAction(this);
+            action
+                .press({
+                    x: opts.startX,
+                    y: opts.startY
+                })
+                .wait(opts.duration)
+                .moveTo({
+                    x: opts.endX,
+                    y: opts.endY
+                })
+                .release();
+
+            return action.perform();
+        }
+    });
+
 
     function WdAndroid(wd) {
         if (!(this instanceof WdAndroid))
@@ -71,14 +82,14 @@
 
         _.extend(this, wd);
 
-        var wd = wd;
+        originalWd = wd;
 
         for (var m in allElements) {
             this.addPromiseChainMethod(buildElementMethodName(m), this.buildMethod(allElements[m]));
             this.addPromiseChainMethod(buildWaitForElementMethodName(m), this.buildWaitForElementMethodName(allElements[m]));
         }
 
-        this.addPromiseChainMethod('swipe', swipe);
+        this.addPromiseChainMethod('swipe', swipe());
 
         return this;
     }

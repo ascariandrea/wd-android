@@ -16,20 +16,22 @@ npm install wd-android
 How to instantiate:
 
 ```
-var wd = require('wd'),
-	WdAndroid = require('wd-android');
-	
-var wdAndroid = new WdAdndroid(wd);
+	var wd = require('wd'),
+		WdAndroid = require('wd-android');
+
+	var wdAndroid = new WdAdndroid(wd);
 ```
 
 
 ## Mocha Integration
 
 ```
-describe("Using Appium and WdAndroid to test Android App.", function(){
-	this.timeout(300000);
-    var driver,
-    	allPassed = true;
+
+
+	describe("Using Appium and WdAndroid to test Android App.", function(){
+		this.timeout(300000);
+	    var driver,
+    		allPassed = true;
 
     before(function() {
 
