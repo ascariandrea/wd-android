@@ -2,7 +2,8 @@
     "use strict";
 
     var _ = require('underscore'),
-        __slice = Array.prototype.slice;
+        __slice = Array.prototype.slice,
+        Q = require('q');
 
     var originalWd = null,
         allElements = {};
@@ -26,33 +27,68 @@
         'ViewPager': 'android.support.v4.view.ViewPager'
     };
 
+    var webElements = {
+        'WebView': 'android.webkit.WebView'
+    };
+
     var buildArgs = function(path, args) {
-        var args = __slice.call(arguments);
-        args[0] = '//'.concat(path);
+        var args = __slice.call(args);
+        var buildPath = '//'.concat(path);
+        args[0] = buildPath;
+
         return args;
     }
 
     WdAndroid.prototype.buildMethod = function(path) {
         return (function() {
-            console.log(buildArgs(path, arguments));
-
             return this.elementByXPath.apply(this, buildArgs(path, arguments));
         });
     };
 
-    WdAndroid.prototype.buildWaitForElementMethodName = function(path) {
+    WdAndroid.prototype.buildWaitForElementMethod = function(path) {
         return (function() {
             return this.waitForElementByXPath.apply(this, buildArgs(path, arguments));
         });
     };
 
-    function buildElementMethodName(m) {
-        return m.substring(0, 1).toLowerCase().concat(m.substring(1)).concat('Element');
+    // WdAndroid.prototype.buildShoulBeMethod = function(path) {
+    //     return (function() {
+    //         var args = __slice.call(arguments),
+    //             el = args[1];
+
+    //         return el.getTagName(function(err, name) {
+    //             return name === path;
+    //         });
+    //     });
+    // };
+
+
+    WdAndroid.prototype.isViewPager = function(tagName) {
+        return (function() {
+            return tagName === path;
+        });
+    };
+
+    function buildElementMethodName(m, cap) {
+        var firstChar;
+        if (!cap)
+            cap = false;
+
+        if (cap === false)
+            firstChar = m.charAt(0).toLowerCase();
+        else
+            firstChar = m.charAt(0).toUpperCase();
+
+        return firstChar.concat(m.slice(1)).concat('Element');
     }
 
     function buildWaitForElementMethodName(m) {
-        return "waitFor".concat(buildElementMethodName(m));
+        return "waitFor".concat(buildElementMethodName(m, true));
     }
+
+    // function buildShouldBeElementMethodName(m) {
+    //     return "shouldBe".concat(buildElementMethodName(m, true));
+    // }
 
     var swipe = (function() {
         return function(opts) {
@@ -73,23 +109,101 @@
         }
     });
 
+    var pinch = (function() {
+        return function(el) {
+            return Q.all([
+                el.getSize(),
+                el.getLocation(),
+            ]).then(function(res) {
+                var size = res[0];
+                var loc = res[1];
+                var center = {
+                    x: loc.x + size.width / 2,
+                    y: loc.y + size.height / 2
+                };
+                var a1 = new wd.TouchAction(this);
+                a1.press({
+                    el: el,
+                    x: center.x,
+                    y: center.y - 100
+                }).moveTo({
+                    el: el
+                }).release();
+                var a2 = new wd.TouchAction(this);
+                a2.press({
+                    el: el,
+                    x: center.x,
+                    y: center.y + 100
+                }).moveTo({
+                    el: el
+                }).release();
+                var m = new wd.MultiAction(this);
+                m.add(a1, a2);
+                return m.perform();
+            }.bind(this));
+        }
+    });
+
+    var zoom = (function() {
+        return function(el) {
+            return Q.all([
+                this.getWindowSize(),
+                this.getLocation(el),
+            ]).then(function(res) {
+                var size = res[0];
+                var loc = res[1];
+                var center = {
+                    x: loc.x + size.width / 2,
+                    y: loc.y + size.height / 2
+                };
+                var a1 = new wd.TouchAction(this);
+                a1.press({
+                    el: el
+                }).moveTo({
+                    el: el,
+                    x: center.x,
+                    y: center.y - 100
+                }).release();
+                var a2 = new wd.TouchAction(this);
+                a2.press({
+                    el: el
+                }).moveTo({
+                    el: el,
+                    x: center.x,
+                    y: center.y + 100
+                }).release();
+                var m = new wd.MultiAction(this);
+                m.add(a1, a2);
+                return m.perform();
+            }.bind(this));
+        }
+    });
+
 
     function WdAndroid(wd) {
         if (!(this instanceof WdAndroid))
             return new WdAndroid(opts);
 
+        // merge all android elements
         _.extend(allElements, buttonsElements, layoutElements, listElements, viewPagerElements);
+
 
         _.extend(this, wd);
 
         originalWd = wd;
 
         for (var m in allElements) {
+            // ??Element(cb)
             this.addPromiseChainMethod(buildElementMethodName(m), this.buildMethod(allElements[m]));
-            this.addPromiseChainMethod(buildWaitForElementMethodName(m), this.buildWaitForElementMethodName(allElements[m]));
+            // waitFor??Element(cb)
+            this.addPromiseChainMethod(buildWaitForElementMethodName(m), this.buildWaitForElementMethod(allElements[m]));
+            // // shoudBe??Element()
+            // this.addPromiseChainMethod(buildShouldBeElementMethodName(m), this.buildShoulBeMethod(allElements[m]));
         }
 
+        this.addPromiseChainMethod('pinch', pinch());
         this.addPromiseChainMethod('swipe', swipe());
+        this.addPromiseChainMethod('zoom', zoom());
 
         return this;
     }

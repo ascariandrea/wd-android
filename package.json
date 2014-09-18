@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/ascariandrea/wd-android",
   "dependencies": {
+    "q": "^1.0.1",
     "underscore": "^1.7.0"
   }
 }
