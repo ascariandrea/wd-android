@@ -32,6 +32,8 @@
     };
 
     var buildArgs = function(path, args) {
+
+        console.log(args);
         var args = __slice.call(args);
         var buildPath = '//'.concat(path);
         args[0] = buildPath;
@@ -51,17 +53,15 @@
         });
     };
 
-    // WdAndroid.prototype.buildShoulBeMethod = function(path) {
-    //     return (function() {
-    //         var args = __slice.call(arguments),
-    //             el = args[1];
-
-    //         return el.getTagName(function(err, name) {
-    //             return name === path;
-    //         });
-    //     });
-    // };
-
+    WdAndroid.prototype.buildShoulBeMethod = function(path) {
+        return (function() {
+            return this.getTagName(function(err, name) {
+                return name;
+            }).then(function(name) {
+                return name.should.be.eql(path);
+            });
+        });
+    };
 
     WdAndroid.prototype.isViewPager = function(tagName) {
         return (function() {
@@ -86,9 +86,9 @@
         return "waitFor".concat(buildElementMethodName(m, true));
     }
 
-    // function buildShouldBeElementMethodName(m) {
-    //     return "shouldBe".concat(buildElementMethodName(m, true));
-    // }
+    function buildShouldBeElementMethodName(m) {
+        return "shouldBe".concat(buildElementMethodName(m, true));
+    }
 
     var swipe = (function() {
         return function(opts) {
@@ -198,7 +198,7 @@
             // waitFor??Element(cb)
             this.addPromiseChainMethod(buildWaitForElementMethodName(m), this.buildWaitForElementMethod(allElements[m]));
             // // shoudBe??Element()
-            // this.addPromiseChainMethod(buildShouldBeElementMethodName(m), this.buildShoulBeMethod(allElements[m]));
+            this.addElementPromiseChainMethod(buildShouldBeElementMethodName(m), this.buildShoulBeMethod(allElements[m]));
         }
 
         this.addPromiseChainMethod('pinch', pinch());
