@@ -1,14 +1,40 @@
 # wd-android
 ==========
 
-A wrapper for wd node package optimized for Android.
-
+A wrapper for `wd` node package optimized for Android to work with [appium.io](http://appium.io).
 
 ## Install
 
 ```js
 npm install wd-android
 ```
+
+## Prerequisites
+You need to install **Appium** and then check if your `ANDROID_HOME` and `JAVA_HOME` are correctly.
+
+You can achieve this by running:
+
+```
+$ appium-doctor --android
+	Running Android Checks
+	✔ ANDROID_HOME is set to "/path/to/android/sdk"
+	✔ JAVA_HOME is set to "/path/to/java/sdk"
+	✔ ADB exists at /sdk/platform-tools/adb
+	✔ Android exists at /sdk/tools/android
+	✔ Emulator exists at /sdk/tools/emulator
+	✔ Android Checks were successful.
+
+	✔ All Checks were successful
+```
+
+If you're usigin Android Studio and you have installed the sdk in Android Studio folder, may you need to run:
+
+```
+$ ln -s /path/to/Android Studio.app /path/to/AndroidStudioApp
+$ export ANDROID_HOME=/path/to/AndroidStudioApp/sdk
+```
+
+Cause [Appium](http://appium.io) doesn't work with spaces in `ANDROID_HOME` or `JAVA_HOME` paths.
 
 
 ## Usage

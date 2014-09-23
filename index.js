@@ -15,7 +15,7 @@
 
     var layoutElements = {
         'FrameLayout': 'android.widget.FrameLayout',
-        'LinearLayout': 'android.widget.LineaLayout',
+        'LinearLayout': 'android.widget.LinearLayout',
         'RelativeLayout': 'android.widget.RelativeLayout'
     };
 
@@ -29,6 +29,11 @@
 
     var webElements = {
         'WebView': 'android.webkit.WebView'
+    };
+
+    var textElements = {
+        'EditTextView': 'android.widget.EditTextView',
+        'TextView': 'android.widget.TextView',
     };
 
     var buildArgs = function(path, args) {
@@ -185,7 +190,13 @@
             return new WdAndroid(opts);
 
         // merge all android elements
-        _.extend(allElements, buttonsElements, layoutElements, listElements, viewPagerElements);
+        _.extend(
+            allElements,
+            buttonsElements,
+            layoutElements,
+            listElements,
+            viewPagerElements,
+            textElements);
 
 
         _.extend(this, wd);
