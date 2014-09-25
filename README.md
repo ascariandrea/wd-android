@@ -10,7 +10,19 @@ npm install wd-android
 ```
 
 ## Prerequisites
-You need to install **Appium** and then check if your `ANDROID_HOME` and `JAVA_HOME` are correctly.
+You need to install [**Appium**](http://appium.io).
+
+You can install with **npm**:
+
+```js
+npm install -g appium
+```
+
+or [download](http://appium.io) it from appium website.
+
+
+and then check if your `ANDROID_HOME` and `JAVA_HOME` are correctly.
+
 
 You can achieve this by running:
 
@@ -36,8 +48,18 @@ $ export ANDROID_HOME=/path/to/AndroidStudioApp/sdk
 
 Cause [Appium](http://appium.io) doesn't work with spaces in `ANDROID_HOME` or `JAVA_HOME` paths.
 
+## Before start
+
+Before launch your script with ```wd-android``` you need to run the appium server.
+It's quite simply:
+
+```
+$ appium
+```
+
 
 ## Usage
+
 
 How to instantiate:
 
@@ -53,17 +75,15 @@ driver.init().setImplicitWaitTimeout(10000);
 driver
 	.viewPagerElement()
 	.swipe({
-   		"startX": 0.9,
-       "startY": 0.5,
-       "endX": 0.1,
-       "endY": 0.5,
-       "duration": 800
+		startX: 0.9,
+		startY: 0.5,
+		endX: 0.1,
+		endY: 0.5,
+		duration: 800
 	})
    .waitForLinearLayout()
    .click();
-
 ```
-
 
 
 ## Api 
@@ -83,9 +103,26 @@ driver.listViewElement();
 // driver.elementByXPath('//android.view.support.v4.ViewPager)
 driver.viewPagerElement();
 
-// driver.elementByXPath('//android.view.)
+// driver.elementByXPath('//android.webkit.WebView)
 driver.webViewElement();
+```
 
+#### Sub-elements Reference
+
+Access the sub-elements by passing parent element id.
+
+**N.B.:** The original [wd](https://github.com/admc/wd) module hasn't this feature.
+
+```js
+driver
+	.elementsFrameLayoutChildren('com.example.app:id/viewPager')
+	.then(function(els) {
+		return els[1].click();
+	})
+	.elementsLinearLayoutChildren('com.example.app:id/listView')
+	.then(function(els) {
+		return els[1].click();
+	});
 ```
 
 #### Mobile Gestures
@@ -95,16 +132,43 @@ Built in methods to perform mobile gestures.
 // perform swipe from 90% of the screen width to 10%
 
 driver.swipe({
-	"startX": 0.9,
-	"startY": 0.5,
-	"endX": 0.1,
-	"endY": 0.5,
-	"duration": 800
+	startX: 0.9,
+	startY: 0.5,
+	endX: 0.1,
+	endY: 0.5,
+	duration: 800
 });
 ```
 
-#### Should integration
+###### Mobile Gestures for specific element
 
+```js
+
+// swipe element
+driver
+	.elementById('com.example.app:id/loginButton')
+	.swipeElement({
+		startX: 0.9,
+		startY: 0.5,
+		endX: 0.1,
+		endY: 0.5,
+		duration: 800
+});
+
+// tap element
+
+driver
+	.elementById('com.example.app:id/loginButton')
+	.tapElement({
+		x: 0.9,
+		y: 0.5
+});
+
+
+```
+
+
+#### Should integration
 
 ```js
 
@@ -128,6 +192,27 @@ driver
 ## Mocha Integration
 
 ```js
+
+var path = require('path'),
+	wd = require('wd'),
+	WdAndroid = require('wd-android');
+
+var appiumServer = {
+    host: 'localhost',
+    port: 4723
+};
+
+var android19 = {
+    browserName: '',
+    'appium-version': '1.2.2',
+    platformName: 'Android',
+    platformVersion: '4.4.2',
+    deviceName: 'Android Emulator',
+    app: undefined
+};
+
+var androidDebugApp = '../path/to/your/apk';
+
 describe("Using Appium and WdAndroid to test Android App.", function(){
 	this.timeout(300000);
     var driver,
@@ -137,10 +222,15 @@ describe("Using Appium and WdAndroid to test Android App.", function(){
 
         var wdAndroid = new WdAndroid(wd);
 
-        driver = wdAndroid.promiseChainRemote();
+        driver = wdAndroid.promiseChainRemote(appiumServer);
+        
+        var desired = android19;
+        
+        desired.app = path.resolve(__dirname, androidDebugApp);
 
-        return driver.init().setImplicitWaitTimeout(10000);
-
+        return driver
+        			.init(desired)
+        			.setImplicitWaitTimeout(10000);
     });
 
 
@@ -158,11 +248,11 @@ describe("Using Appium and WdAndroid to test Android App.", function(){
         return driver
             .viewPagerElement()
             .swipe({
-                "startX": 0.9,
-                "startY": 0.5,
-                "endX": 0.1,
-                "endY": 0.5,
-                "duration": 800
+                startX: 0.9,
+                startY: 0.5,
+                endX: 0.1,
+                endY: 0.5,
+                duration: 800
             })
             .waitForLinearLayout()
             .click();
