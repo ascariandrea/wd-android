@@ -7,6 +7,7 @@
         dom = require('xmldom').DOMParser,
         Q = require('q');
 
+
     var originalWd = null,
         allElements = {};
 
@@ -78,6 +79,20 @@
         });
     };
 
+
+    var promisesList = function() {
+        var calls = [],
+            args = __slice.call(arguments);
+
+        var func = args[0],
+            occurences = args[1];
+
+        for (var i in occurences)
+            calls.push(this[func](occurences[i]));
+
+        return calls;
+    };
+
     var buildChildrenElementsMethod = function(path) {
         return (function() {
 
@@ -86,8 +101,15 @@
             return this.source(function(err, source) {
                 return source;
             }).then(function(source) {
-                var childrenPath = xmlProcessor(source, args[0]) + '/' + path;
-                return this.elementsByXPath(childrenPath);
+                var childrenPaths = xmlProcessor(source, args[0], path);
+
+                var result = null;
+                if (childrenPaths && childrenPaths.length) {
+                    result = Q.all(promisesList.call(this, 'elementByXPath', childrenPaths));
+                }
+
+                return result;
+
             }.bind(this));
         });
     };
@@ -121,10 +143,11 @@
     }
 
     function buildChildrenElementsMethodName(m) {
-        return "element".concat(capitalizeString(m, true)).concat('Children');
+        return capitalizeString(m).concat('Children');
     }
 
-    var __xPath = '';
+    var __xPath = '',
+        elementsIndexes = [];
 
     function __xPathParser(el, elIndex, id) {
         var childIndex = null;
@@ -134,22 +157,24 @@
 
 
             if (!elIndex && typeof elIndex !== 'number') {
-
-                _.each(parent.childNodes, function(c, i) {
+                var i = 0;
+                _.each(parent.childNodes, function(c) {
+                    if (c.tagName == el.tagName)
+                        i++;
 
                     var resourceIdAttr = __slice.call(c.attributes).filter(function(a) {
                         return (a.localName == 'resource-id' && a.value == id);
                     });
 
                     if (resourceIdAttr && resourceIdAttr.length) {
-                        childIndex = i;
+                        childIndex = i - 1;
                         return;
                     }
                 });
 
             } else {
                 var parentChildrenCount = __slice.call(el.parentNode.childNodes).length;
-                var nextItemsCount = nextCounter(el);
+                var nextItemsCount = nextCounter(el, el.tagName);
                 var childIndex = parentChildrenCount - nextItemsCount - 1;
             }
 
@@ -164,18 +189,19 @@
     }
 
     var nextCount = 0;
-    var nextCounter = function(el) {
+    var nextCounter = function(el, tagName) {
+
         if (el.nextSibling) {
-            nextCount++;
-            return nextCounter(el.nextSibling);
-        } else {
-            return nextCount;
+            if (el.tagName == tagName) nextCount++;
+            return nextCounter(el.nextSibling, tagName);
         }
+
+        return nextCount;
     };
 
 
 
-    function xmlProcessor(source, id) {
+    function xmlProcessor(source, id, tagName) {
         var __xTotalPath = '';
         var found = false;
         var index = 0;
@@ -195,11 +221,25 @@
             }
         });
 
-        if (found) {
+        if (found)
             __xTotalPath = __xPathParser(nodes[index].ownerElement, null, id);
-        }
 
-        return __xTotalPath;
+        // map children matching requested elements
+
+        var matchedChildrenPaths = [];
+        var childIndex = 0;
+
+        _.each(__slice.call(nodes[index].ownerElement.childNodes), function(c) {
+            console.log(c.tagName);
+            if (c.tagName == tagName) {
+                childIndex++;
+                matchedChildrenPaths.push(__xTotalPath + '/' + tagName + '[' + childIndex + ']');
+            }
+        });
+
+        console.log(matchedChildrenPaths);
+
+        return matchedChildrenPaths;
     }
 
 
@@ -401,12 +441,9 @@
             this.addPromiseChainMethod(buildWaitForElementMethodName(m), buildWaitForElementMethod(allElements[m]));
             // shoudBe??Element()
             this.addElementPromiseChainMethod(buildShouldBeElementMethodName(m), buildShoulBeMethod(allElements[m]));
-            /** the dream start here
-                ??Children()
-             **/
-
+            // elements??Children(id, cb)
             this.addPromiseChainMethod(buildChildrenElementsMethodName(m), buildChildrenElementsMethod(allElements[m]));
-            /** stop dreaming **/
+
         }
 
         this.addPromiseChainMethod('pinch', pinch());

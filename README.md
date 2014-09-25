@@ -51,7 +51,7 @@ Cause [Appium](http://appium.io) doesn't work with spaces in `ANDROID_HOME` or `
 ## Before start
 
 Before launch your script with ```wd-android``` you need to run the appium server.
-It's quite simply:
+It's quite simple:
 
 ```
 $ appium
