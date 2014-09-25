@@ -115,11 +115,11 @@ Access the sub-elements by passing parent element id.
 
 ```js
 driver
-	.elementsFrameLayoutChildren('com.example.app:id/viewPager')
+	.frameLayoutChildren('com.example.app:id/viewPager')
 	.then(function(els) {
 		return els[1].click();
 	})
-	.elementsLinearLayoutChildren('com.example.app:id/listView')
+	.linearLayoutChildren('com.example.app:id/listView')
 	.then(function(els) {
 		return els[1].click();
 	});
