@@ -1,5 +1,6 @@
-# wd-android
-==========
+# wd-android 
+
+[![NPM version](https://badge.fury.io/js/wd-android.svg)](http://badge.fury.io/js/wd-android)
 
 A wrapper for `wd` node package optimized for Android to work with [appium.io](http://appium.io).
 
@@ -88,7 +89,7 @@ driver
 
 ## Api 
 
-More friendly methods to referer to Android Elements than by XPath are provided.
+More friendly methods to referer to Android Elements than by XPath.
 
 ```js
 // driver.elementByXPath('//android.widget.FrameLayout')

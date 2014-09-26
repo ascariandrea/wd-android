@@ -67,6 +67,18 @@
         });
     };
 
+    var buildAlertMethod = function() {
+        return (function() {
+            var args = __slice.call(arguments),
+                defaultAlertId = 'android:id/parentPanel';
+
+            if (typeof args[0] != 'string')
+                args.unshift(defaultAlertId);
+
+            return this.elementById.apply(this, args);
+        })
+    }
+
     var buildElementsMethod = function(path) {
         return (function() {
             return this.elementsByXPath.apply(this, buildArgs(path, arguments));
@@ -461,13 +473,16 @@
             this.addElementPromiseChainMethod(buildShouldBeElementMethodName(m), buildShoulBeMethod(allElements[m]));
             // elements??Children(id, cb)
             this.addPromiseChainMethod(buildChildrenElementsMethodName(m), buildChildrenElementsMethod(allElements[m]));
-            // elementBySimpleId(id, cb)
-            this.addPromiseChainMethod('elementBySimpleId', buildIdMethod('elementById'));
-            this.addPromiseChainMethod('waitForElementBySimpleId', buildIdMethod('waitForElementById'));
 
         }
 
         defaultPckg = pckg;
+
+        // elementBySimpleId(id, cb)
+        this.addPromiseChainMethod('elementBySimpleId', buildIdMethod('elementById'));
+        this.addPromiseChainMethod('waitForElementBySimpleId', buildIdMethod('waitForElementById'));
+
+        this.addPromiseChainMethod('alertElement', buildAlertMethod());
 
         this.addPromiseChainMethod('pinch', pinch());
         this.addPromiseChainMethod('swipe', swipe());
