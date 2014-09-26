@@ -107,11 +107,32 @@ driver.viewPagerElement();
 driver.webViewElement();
 ```
 
+
+
+#### Simple Id
+
+Pass the default package as secondo arguments in wd-android constructor to find element by their simple ids.
+
+
+```js
+// wd way
+driver.elementById('com.example.app:id/productsList');
+
+// wd-android way
+var wdAndroid = new WdAndroid(wd, 'com.example.app');
+...
+...
+driver.elementBySimpleId('productsList')
+```
+
+
 #### Sub-elements Reference
 
 Access the sub-elements by passing parent element id.
 
 **N.B.:** The original [wd](https://github.com/admc/wd) module hasn't this feature.
+
+And yes, you can use the simple elements ids.
 
 ```js
 driver
@@ -119,7 +140,8 @@ driver
 	.then(function(els) {
 		return els[1].click();
 	})
-	.linearLayoutChildren('com.example.app:id/listView')
+	// with simple id
+	.linearLayoutChildren('productList')
 	.then(function(els) {
 		return els[1].click();
 	});

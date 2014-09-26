@@ -9,7 +9,8 @@
 
 
     var originalWd = null,
-        allElements = {};
+        allElements = {},
+        defaultPckg;
 
     var actionBarElements = {
         'ActionBarTab': 'android.app.ActionBar.Tab',
@@ -57,6 +58,15 @@
         });
     };
 
+    var buildIdMethod = function(methodName) {
+        return (function() {
+            var args = __slice.call(arguments);
+            args[0] = checkId(args[0]);
+            console.log(methodName);
+            return this[methodName].apply(this, args);
+        });
+    };
+
     var buildElementsMethod = function(path) {
         return (function() {
             return this.elementsByXPath.apply(this, buildArgs(path, arguments));
@@ -80,6 +90,15 @@
     };
 
 
+    var checkId = function(id) {
+        var idRegExp = new RegExp(/^([a-zA-Z0-9]+\.)([a-zA-Z0-9]+\.)([a-zA-Z0-9]+\:)[id]+\/([a-zA-Z0-9]+)$/);
+        if (!idRegExp.test(id))
+            id = defaultPckg.concat(':id/').concat(id);
+
+        return id;
+    }
+
+
     var promisesList = function() {
         var calls = [],
             args = __slice.call(arguments);
@@ -101,7 +120,7 @@
             return this.source(function(err, source) {
                 return source;
             }).then(function(source) {
-                var childrenPaths = xmlProcessor(source, args[0], path);
+                var childrenPaths = xmlProcessor(source, checkId(args[0]), path);
 
                 var result = null;
                 if (childrenPaths && childrenPaths.length) {
@@ -237,7 +256,6 @@
             }
         });
 
-        console.log(matchedChildrenPaths);
 
         return matchedChildrenPaths;
     }
@@ -443,8 +461,13 @@
             this.addElementPromiseChainMethod(buildShouldBeElementMethodName(m), buildShoulBeMethod(allElements[m]));
             // elements??Children(id, cb)
             this.addPromiseChainMethod(buildChildrenElementsMethodName(m), buildChildrenElementsMethod(allElements[m]));
+            // elementBySimpleId(id, cb)
+            this.addPromiseChainMethod('elementBySimpleId', buildIdMethod('elementById'));
+            this.addPromiseChainMethod('waitForElementBySimpleId', buildIdMethod('waitForElementById'));
 
         }
+
+        defaultPckg = pckg;
 
         this.addPromiseChainMethod('pinch', pinch());
         this.addPromiseChainMethod('swipe', swipe());
