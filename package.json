@@ -1,32 +1,32 @@
 {
-    "name": "wd-android",
-    "version": "0.0.8",
-    "description": "A wrapper for wd node package optimized for Android.",
-    "main": "index.js",
-    "scripts": {
-        "test": "mocha test"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/ascariandrea/wd-android.git"
-    },
-    "keywords": [
-        "appium",
-        "wd",
-        "android",
-        "test",
-        "mocha"
-    ],
-    "author": "Andrea Ascari <dev.ascariandrea@gmail.com> (http://www.ascariandrea.com/)",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/ascariandrea/wd-android/issues"
-    },
-    "homepage": "https://github.com/ascariandrea/wd-android",
-    "dependencies": {
-        "q": "^1.0.1",
-        "underscore": "^1.7.0",
-        "xmldom": "^0.1.19",
-        "xpath": "0.0.7"
-    }
+  "name": "wd-android",
+  "version": "0.0.9",
+  "description": "A wrapper for wd node package optimized for Android.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ascariandrea/wd-android.git"
+  },
+  "keywords": [
+    "appium",
+    "wd",
+    "android",
+    "test",
+    "mocha"
+  ],
+  "author": "Andrea Ascari <dev.ascariandrea@gmail.com> (http://www.ascariandrea.com/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ascariandrea/wd-android/issues"
+  },
+  "homepage": "https://github.com/ascariandrea/wd-android",
+  "dependencies": {
+    "q": "^1.0.1",
+    "underscore": "^1.7.0",
+    "xmldom": "^0.1.19",
+    "xpath": "0.0.7"
+  }
 }
