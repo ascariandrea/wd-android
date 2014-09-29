@@ -509,8 +509,8 @@
         this.addPromiseChainMethod('alertElement', buildAlertMethod());
         this.addPromiseChainMethod('shouldAppearAlertElement', shouldAppearAlertElement());
         this.addPromiseChainMethod('positiveAlertButton', alertButton('android:id/button1'));
-        this.addPromiseChainMethod('negativeAlertButton', alertButton('android:id/button3'));
-        this.addPromiseChainMethod('neutralAlertButton', alertButton('android:id/button2'));
+        this.addPromiseChainMethod('negativeAlertButton', alertButton('android:id/button2'));
+        this.addPromiseChainMethod('neutralAlertButton', alertButton('android:id/button3'));
 
 
         this.addPromiseChainMethod('pinch', pinch());
