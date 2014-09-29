@@ -148,6 +148,23 @@ driver
 	});
 ```
 
+
+### Alerts
+
+Access the alert dialog showed without pain.
+
+```js
+driver.elementBySimpleId('takeButtonBox')
+	.click()
+   .shouldAppearAlertElement()
+   .positiveAlertButton()
+   .text()
+   		.should.become.eql("Ok")
+   .negativeAlertButton()
+   .text()
+   		.should.become.eql("Cancel");
+```
+
 #### Mobile Gestures
 Built in methods to perform mobile gestures.
 

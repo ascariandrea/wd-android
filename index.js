@@ -62,22 +62,45 @@
         return (function() {
             var args = __slice.call(arguments);
             args[0] = checkId(args[0]);
-            console.log(methodName);
+
             return this[methodName].apply(this, args);
         });
     };
 
+    var defaultAlertId = 'android:id/parentPanel';
+
     var buildAlertMethod = function() {
         return (function() {
-            var args = __slice.call(arguments),
-                defaultAlertId = 'android:id/parentPanel';
+            var args = __slice.call(arguments);
 
             if (typeof args[0] != 'string')
                 args.unshift(defaultAlertId);
 
             return this.elementById.apply(this, args);
-        })
-    }
+        });
+    };
+
+    var alertButton = function(buttonId) {
+        return (function() {
+            var args = __slice.call(arguments);
+
+            if (typeof args[0] != 'string')
+                args.unshift(buttonId);
+
+            return this.elementById.apply(this, args);
+        });
+    };
+
+    var shouldAppearAlertElement = function() {
+        return (function() {
+            var args = __slice.call(arguments);
+
+            if (typeof args[0] != 'string')
+                args.unshift(defaultAlertId);
+
+            return this.elementById.apply(this, args);
+        });
+    };
 
     var buildElementsMethod = function(path) {
         return (function() {
@@ -482,7 +505,13 @@
         this.addPromiseChainMethod('elementBySimpleId', buildIdMethod('elementById'));
         this.addPromiseChainMethod('waitForElementBySimpleId', buildIdMethod('waitForElementById'));
 
+
         this.addPromiseChainMethod('alertElement', buildAlertMethod());
+        this.addPromiseChainMethod('shouldAppearAlertElement', shouldAppearAlertElement());
+        this.addPromiseChainMethod('positiveAlertButton', alertButton('android:id/button1'));
+        this.addPromiseChainMethod('negativeAlertButton', alertButton('android:id/button3'));
+        this.addPromiseChainMethod('neutralAlertButton', alertButton('android:id/button2'));
+
 
         this.addPromiseChainMethod('pinch', pinch());
         this.addPromiseChainMethod('swipe', swipe());
