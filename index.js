@@ -18,35 +18,59 @@
 
     var buttonsElements = {
         'Button': 'android.widget.Button',
-        'ImageButton': 'android.widget.ImageButton'
+        'ImageButton': 'android.widget.ImageButton',
+        'MediaRouteButton': 'android.app.MediaRouteButton',
+        'RadioButton': 'android.widget.RadioButton',
+        'ToggleButton': 'android.widget.ToggleButton',
+        'ZoomButton': 'android.widget.ZoomButton'
     };
 
     var layoutElements = {
+        'AbsoluteLayout': 'android.widget.AbsoluteLayout',
+        'DrawerLayout': 'android.support.v4.widget.DrawerLayout',
         'FrameLayout': 'android.widget.FrameLayout',
+        'GridLayout': 'android.widget.GridLayout',
         'LinearLayout': 'android.widget.LinearLayout',
-        'RelativeLayout': 'android.widget.RelativeLayout'
+        'NoSaveStateFrameLayout': 'android.support.v4.widget.NoSaveStateFrameLayout',
+        'RelativeLayout': 'android.widget.RelativeLayout',
+        'SlidingPaneLayout': 'android.support.v4.widget.SlidingPaneLayout',
+        'SwipeRefreshLayout': 'android.support.v4.widget.SwipeRefreshLayout',
+        'TableLayout ': 'android.widget.TableLayout'
     };
 
     var listElements = {
-        'ListView': 'android.widget.ListView',
+        'ExpandableListView': 'android.widget.ExpandableListView',
+        'ListView ': 'android.widget.ListView',
     };
 
     var viewPagerElements = {
-        'ViewPager': 'android.support.v4.view.ViewPager'
+        'ViewPager ': 'android.support.v4.view.ViewPager'
     };
 
     var webElements = {
         'WebView': 'android.webkit.WebView'
     };
 
+    var tabElements = {
+        'TableRow': 'android.widget.TableRow',
+        'TabHost': 'android.widget.TabHost',
+        'TabWidget': 'android.widget.TabWidget'
+    };
+
     var textElements = {
+        'AutoCompleteTextView': 'android.widget.AutoCompleteTextView',
+        'MultiAutoCompleteTextView': 'android.widget.MultiAutoCompleteTextView',
+        'CheckedTextView': 'android.widget.CheckedTextView',
         'EditTextView': 'android.widget.EditTextView',
+        'ExtractEditText': 'android.widget.ExtractEditText',
+        'TextClock': 'android.widget.TextClock',
+        'TextSwitcher': 'android.widget.TextSwitcher',
         'TextView': 'android.widget.TextView',
     };
 
     var buildArgs = function(path, args) {
         var args = __slice.call(args);
-        var buildPath = '//'.concat(path);
+        var buildPath = ' //'.concat(path);
         args[0] = buildPath;
 
         return args;
