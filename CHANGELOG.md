@@ -1,7 +1,13 @@
 # Changelog
 
 
-## 0.0.x Relases
+
+## 0.1.x Releases
+
+### 0.1.0
+- add all references to text, linear, button and tabs elements
+
+## 0.0.x Releases
 
 ### 0.0.9
 - fix alert neutral button method
