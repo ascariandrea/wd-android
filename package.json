@@ -1,6 +1,6 @@
 {
   "name": "wd-android",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A wrapper for wd node package optimized for Android.",
   "main": "index.js",
   "scripts": {
