@@ -35,16 +35,16 @@
         'RelativeLayout': 'android.widget.RelativeLayout',
         'SlidingPaneLayout': 'android.support.v4.widget.SlidingPaneLayout',
         'SwipeRefreshLayout': 'android.support.v4.widget.SwipeRefreshLayout',
-        'TableLayout ': 'android.widget.TableLayout'
+        'TableLayout': 'android.widget.TableLayout'
     };
 
     var listElements = {
         'ExpandableListView': 'android.widget.ExpandableListView',
-        'ListView ': 'android.widget.ListView',
+        'ListView': 'android.widget.ListView',
     };
 
     var viewPagerElements = {
-        'ViewPager ': 'android.support.v4.view.ViewPager'
+        'ViewPager': 'android.support.v4.view.ViewPager'
     };
 
     var webElements = {

@@ -4,6 +4,9 @@
 
 ## 0.1.x Releases
 
+### 0.1.1
+- fix element string declaration
+
 ### 0.1.0
 - add all references to text, linear, button and tabs elements
 
