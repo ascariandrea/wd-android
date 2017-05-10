@@ -68,7 +68,7 @@ How to instantiate:
 var wd = require('wd'),	
 	WdAndroid = require('wd-android');
 
-var wdAndroid = new WdAdndroid(wd);
+var wdAndroid = new WdAndroid(wd);
 
 var driver = wdAndroid.promiseChainRemote();
 
